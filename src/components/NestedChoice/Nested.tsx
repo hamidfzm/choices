@@ -3,8 +3,10 @@ import { useRef } from 'react';
 import type { Placement } from '@popperjs/core';
 
 import Dropdown from './Dropdown';
+import DropdownMobile from './DropdownMobile';
 import Item from './Item';
 import type { Choice } from './types';
+import useIsMobile from './useIsMobile';
 
 type Props = {
   header?: ReactNode;

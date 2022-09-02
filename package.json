@@ -11,7 +11,7 @@
   "dependencies": {
     "@popperjs/core": "^2.11.6",
     "clsx": "^1.2.1",
-    "deepdash-es": "^5.3.9",
+    "fuse.js": "^6.6.2",
     "next": "12.2.5",
     "react": "18.2.0",
     "react-dom": "18.2.0",

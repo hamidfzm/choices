@@ -11,7 +11,7 @@ import TrioImg from './Trio.png';
 const choices: Choice[] = [
   {
     id: 'Bloko',
-    icon: <img width={55} height={55} alt="Blocko" src={BlockoImg.src} />,
+    icon: <img width={40} height={40} alt="Blocko" src={BlockoImg.src} />,
     label: 'Bloko',
     choices: [
       {

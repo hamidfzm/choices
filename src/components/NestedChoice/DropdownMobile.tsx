@@ -1,14 +1,11 @@
 import type { ReactNode } from 'react';
 import {
-  createRef,
   forwardRef,
   useCallback,
   useImperativeHandle,
   useRef,
   useState,
 } from 'react';
-import type { Instance, Placement } from '@popperjs/core';
-import { createPopper } from '@popperjs/core';
 import clsx from 'clsx';
 import { useOnClickOutside } from 'usehooks-ts';
 
@@ -17,48 +14,22 @@ type Props = {
   label?: ReactNode;
   icon?: ReactNode;
   children: ReactNode;
+  onClick?: () => void;
   active?: boolean;
-  placement?: Placement;
 };
 
-const Dropdown = forwardRef<HTMLDivElement, Props>(
-  (
-    { children, label, icon, active, className, placement = 'bottom-start' },
-    ref
-  ) => {
+const DropdownMobile = forwardRef<HTMLDivElement, Props>(
+  ({ children, label, icon, active, className, onClick }, ref) => {
     const [dropdownPopoverShow, setDropdownPopoverShow] = useState(false);
-    const popper = useRef<Instance>();
-    const btnDropdownRef = createRef<HTMLButtonElement>();
-    const popoverDropdownRef = createRef<HTMLDivElement>();
 
     const handleClickOutside = useCallback(() => {
-      popper.current?.destroy();
-      popper.current = undefined;
       setDropdownPopoverShow(false);
     }, []);
 
     const handleClick = useCallback(() => {
-      if (dropdownPopoverShow) {
-        handleClickOutside();
-      } else {
-        if (!btnDropdownRef.current || !popoverDropdownRef.current) return;
-        popper.current = createPopper(
-          btnDropdownRef.current,
-          popoverDropdownRef.current,
-          {
-            placement: placement,
-          }
-        );
-
-        setDropdownPopoverShow(true);
-      }
-    }, [
-      btnDropdownRef,
-      dropdownPopoverShow,
-      handleClickOutside,
-      placement,
-      popoverDropdownRef,
-    ]);
+      setDropdownPopoverShow(true);
+      onClick?.();
+    }, [onClick]);
 
     const containerRef = useRef<HTMLDivElement>(null);
     useOnClickOutside(containerRef, handleClickOutside);
@@ -71,13 +42,12 @@ const Dropdown = forwardRef<HTMLDivElement, Props>(
       <div ref={containerRef}>
         <button
           onClick={handleClick}
-          ref={btnDropdownRef}
           className={clsx(
             className,
             'bg-white',
             'font-normal text-sm',
-            'px-4 py-2.5 text-left',
-            'w-72',
+            'px-4 py-2 text-left',
+            'w-full',
             {
               'text-gray-400': !active,
               'text-neutral-700': active,
@@ -91,9 +61,7 @@ const Dropdown = forwardRef<HTMLDivElement, Props>(
           )}
           <span className="w-full">{label}</span>
           <svg
-            className={clsx('ml-2 w-4 h-4', {
-              '-rotate-90': placement !== 'bottom-start',
-            })}
+            className="ml-2 w-4 h-4 -rotate-90"
             aria-hidden="true"
             fill="none"
             stroke="currentColor"
@@ -110,15 +78,14 @@ const Dropdown = forwardRef<HTMLDivElement, Props>(
         </button>
 
         <div
-          ref={popoverDropdownRef}
           className={clsx(
-            clsx('z-50 w-72', dropdownPopoverShow ? 'block' : 'hidden', {
-              'pt-1': placement === 'bottom-start',
-              'px-1': placement !== 'bottom-start',
-            })
+            clsx(
+              'z-50 w-full absolute bottom-0 left-0 right-0',
+              dropdownPopoverShow ? 'block' : 'hidden'
+            )
           )}
         >
-          <ul className="bg-white text-gray-700 text-sm drop-shadow-md rounded-md">
+          <ul className="bg-white text-gray-700 text-sm drop-shadow-md rounded-t-md">
             {children}
           </ul>
         </div>
@@ -127,4 +94,4 @@ const Dropdown = forwardRef<HTMLDivElement, Props>(
   }
 );
 
-export default Dropdown;
+export default DropdownMobile;

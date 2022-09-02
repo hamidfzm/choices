@@ -1,4 +1,5 @@
 import type { NextPage } from 'next';
+import dynamic from 'next/dynamic';
 
 import Choices from '../assets/Choices';
 import NestedChoice from '../components/NestedChoice';
